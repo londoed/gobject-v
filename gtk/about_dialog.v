@@ -140,7 +140,7 @@ fn (v *AboutDialog) get_authors() []string {
 	cauthors := C.gtk_about_dialog_get_authors(v.native())
 
 	if isnil(cauthors) {
-			return nil
+		return nil
 	}
 
 	for {

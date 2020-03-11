@@ -146,7 +146,7 @@ fn (v *AboutDialog) get_authors() []string {
 	for {
 		if isnil(*cauthors) {
 			break
-				}
+		}
 
 			authors.append(string((*C.char)(*cauthors)))
 			cauthors = C.next_gcharptr(cauthors)

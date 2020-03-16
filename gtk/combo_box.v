@@ -310,3 +310,43 @@ fn (v *ComboBoxText) prepend(id, text string) {
 	defer C.free(voidptr(ctext))
 	C.gtk_combo_box_text_append(v.native(), (*C.char)(cid), (*C.char)(ctext))
 }
+
+fn (v *ComboBoxText) insert(position int, id, text string) {
+	cid := C.string(id)
+	ctext := C.string(text)
+	defer C.free(voidptr(cid))
+	defer C.free(voidptr(ctext))
+	C.gtk_combo_box_text_insert(v.native(), C.int(position), (*C.char)(cid), (*C.char)(ctext))
+}
+
+fn (v *ComboBoxText) append_text(text string) {
+	cstr := C.string(text)
+	defer C.free(voidptr(cstr))
+	C.gtk_combo_box_text_append_text(v.native(), (*C.char)(cstr))
+}
+
+fn (v *ComboBoxText) prepend_text(text string) {
+	cstr := C.string(text)
+	defer C.free(voidptr(cstr))
+	C.gtk_combo_box_text_prepend_text(v.native(), (*C.char)(cstr))
+}
+
+fn (v *ComboBoxText) insert_text(position int, text string) {
+	cstr := C.string(text)
+	defer C.free(voidptr(cstr))
+	C.gtk_combo_box_text_insert_text(v.native(), C.int(position), (*C.char)(cstr))
+}
+
+fn (v *ComboBoxText) remove(position int) {
+	C.gtk_combo_box_text_remove(v.native(), C.int(position))
+}
+
+fn (v *ComboBoxText) remove_all() {
+	C.gtk_combo_box_text_remove_all(v.native())
+}
+
+fn (v *ComboBoxText) get_active_text() string {
+	c := (*C.char)(C.gtk_combo_box_text_get_active_text(v.native()))
+	defer C.free(voidptr)
+	return C.string(c)
+}

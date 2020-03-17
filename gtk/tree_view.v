@@ -1,7 +1,7 @@
 module gtk
 
 const (
-	voidptr_err := error("[!] ERROR: cgo returned unexpected nil pointer")
+	voidptr_err := error('[!] ERROR: cgo returned unexpected nil pointer')
 )
 
 type TreeView struct {

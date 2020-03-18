@@ -1059,3 +1059,496 @@ fn (v *EventCrossing) focus() bool {
 	c := v.native().focus
 	return bool(c)
 }
+
+type EventScroll struct {
+	*Event
+}
+
+fn (v *EventScroll) new() *EventScroll {
+	ee := (*C.GdkEvent)(voidptr(&C.GdkEventScroll{voidptr(v.event.native())}))
+	ev := Event{ee}
+	return &EventScroll(&ev)
+}
+
+fn (v *EventScroll) new_from_event(event *Event) *EventScroll {
+	ee := (*C.GdkEvent)(voidptr(v.event.native()))
+	ev := Event{ee}
+	return &EventScroll{&ev}
+}
+
+fn (v *EventScroll) native_ptr() byteptr {
+	return byteptr(voidptr(v.native()))
+}
+
+fn (v *EventScroll) native() *C.GdkEventScroll {
+	return (*C.GdkEventScroll)(voidptr(v.event.native()))
+}
+
+fn (v *EventScroll) delta_x() f64 {
+	return f64(v.native().delta_x)
+}
+
+fn (v *EventScroll) delta_y() f64 {
+	return f64(v.native().delta_y)
+}
+
+fn (v *EventScroll) x() f64 {
+	return f64(v.native().x)
+}
+
+fn (v *EventScroll) y() f64 {
+	return f64(v.native().y)
+}
+
+fn (v *EventScroll) type() EventType {
+	c := v.native()._type
+	return EventType(c)
+}
+
+fn (v *EventScroll) direction() ScrollDirection {
+	c := v.native().direction
+	return ScrollDirection(c)
+}
+
+fn (v *EventScroll) state() ModifierType {
+	c := v.native().state
+	return ModifierType(c)
+}
+
+type EventWindowState struct {
+	*Event
+}
+
+fn (v *EventWindowState) new() *EventWindowState {
+	ee := (*C.GdkEvent)(voidptr(&C.GdkEventWindowState{voidptr(v.event.native())}))
+	ev := Event{ee}
+	return &EventWindowState{&ev}
+}
+
+fn (v *EventWindowState) new_from_event(event *Event) *EventWindowState {
+	ee := (*C.GdkEvent)(voidptr(v.event.native()))
+	ev := Event{ee}
+	return &EventWindowState{&ev}
+}
+
+fn (v *EventWindowState) native_ptr() byteptr {
+	return byteptr(voidptr(v.native()))
+}
+
+fn (v *EventWindowState) native() *C.EventWindowState {
+	return (*C.GdkEventWindowState)(voidptr(v.event.native()))
+}
+
+fn (v *EventWindowState) type() EventType {
+	c := v.native()._type
+	return EventType(c)
+}
+
+fn (v *EventWindowState) changed_mask() WindowState {
+	c := v.native().changed_mask
+	return WindowState(c)
+}
+
+fn (v *EventWindowState) new_window_state() WindowState {
+	c := v.native().new_window_state
+	return WindowState(c)
+}
+
+type EventConfigure struct {
+	*Event
+}
+
+fn (v *EventConfigure) new() *EventConfigure {
+	ee := (*C.GdkEvent)(voidptr(&C.GdkEventConfigure{voidptr(v.event.native())}))
+	ev := Event{ee}
+	return &EventConfigure(&ev)
+}
+
+fn (v *EventConfigure) new_from_event(event *Event) *EventConfigure {
+	ee := (*C.GdkEvent)(voidptr(v.event.native()))
+	ev := Event{ee}
+	return &EventConfigure{&ev}
+}
+
+fn (v *EventConfigure) native_ptr() byteptr {
+	return byteptr(voidptr(v.native()))
+}
+
+fn (v *EventConfigure) native() *C.GdkEventConfigure {
+	return (*C.GdkEventConfigure)(voidptr(V.event.native()))
+}
+
+fn (v *EventConfigure) type() EventType {
+	c := v.native()._type
+	return EventType(c)
+}
+
+fn (v *EventConfigure) x() int {
+	c := v.native().x
+	return int(c)
+}
+
+fn (v *EventConfigure) y() int {
+	c := v.native().y
+	return int(c)
+}
+
+fn (v *EventConfigure) width() int {
+	c := v.native().width
+	return int(c)
+}
+
+fn (v *EventConfigure) height() int {
+	c := v.native().height
+	return int(c)
+}
+
+type Gravity int
+
+const (
+	GDK_GRAVITY_NORTH_WEST = C.GDK_GRAVITY_NORTH_WEST
+	GDK_GRAVITY_NORTH      = C.GDK_GRAVITY_NORTH
+	GDK_GRAVITY_NORTH_EAST = C.GDK_GRAVITY_NORTH_EAST
+	GDK_GRAVITY_WEST       = C.GDK_GRAVITY_WEST
+	GDK_GRAVITY_CENTER     = C.GDK_GRAVITY_CENTER
+	GDK_GRAVITY_EAST       = C.GDK_GRAVITY_EAST
+	GDK_GRAVITY_SOUTH_WEST = C.GDK_GRAVITY_SOUTH_WEST
+	GDK_GRAVITY_SOUTH      = C.GDK_GRAVITY_SOUTH
+	GDK_GRAVITY_SOUTH_EAST = C.GDK_GRAVITY_SOUTH_EAST
+	GDK_GRAVITY_STATIC     = C.GDK_GRAVITY_STATIC
+)
+
+fn marshal_gravity(p byteptr) (interface{}, error) {
+	c := C.g_value_get_enum((*C.value)(voidptr(p)))
+	return Gravity(c), voidptr
+}
+
+type Pixbuf struct {
+	*glib.Object
+}
+
+fn (v *Pixbuf) get_type() glib.Type {
+	return glib.Type(C.gdk_pixbuf_get_type(v.native()))
+}
+
+fn (v *Pixbuf) native() *C.GdkPixbuf {
+	if isnil(v) || isnil(V.GObject) {
+		return voidptr
+	}
+
+	p := voidptr(v.GObject)
+	return C.toGdkPixbuf(p)
+}
+
+fn (v *Pixbuf) native_ptr() byteptr {
+	return byteptr(voidptr(v.native()))
+}
+
+fn (v *Pixbuf) native_private() *C.GdkPixbuf {
+	if isnil(v) || isnil(v.GObject) {
+		return voidptr
+	}
+
+	p := voidptr(v.GObject)
+	return C.toGdkPixbuf(p)
+}
+
+fn marshal_pixbuf(p byteptr) (interface{}, error) {
+	c := C.g_value_get_object((*C.value)(voidptr(p)))
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	return &Pixbuf{obj}, voidptr
+}
+
+fn (v *Pixbuf) get_colorspace() Colorspace {
+	c := C.gdk_pixbuf_get_colorspace(v.native())
+	return Colorspace(c)
+}
+
+fn (v *Pixbuf) get_n_channels() int {
+	c := C.gdk_pixbuf_get_n_channels(v.native())
+	return int(c)
+}
+
+fn (v *Pixbuf) get_has_alpha() bool {
+	c := C.gdk_pixbuf_get_has_alpha(v.native())
+	return bool(c)
+}
+
+fn (v *Pixbuf) get_bits_per_sample() int {
+	c := C.gdk_pixbuf_get_bits_per_sample(v.native())
+	return int(c)
+}
+
+fn (v *Pixbuf) get_pixels() (channels []byte) {
+	mut length := C.int(0)
+	c := C.gdk_pixbuf_get_pixels_with_length(v.native(), &length)
+	mut slice_header := (*reflect.slice_header)(voidptr(&channels))
+	slice_header.data = byteptr(voidptr(c))
+	slice_header.len = int(length)
+	slice_header.cap = int(length)
+
+	v.ref()
+ 	runtime.set_finalizer(&channels, fn(_ *[]byte) {
+		v.unref()
+	})
+
+	return
+}
+
+fn (v *Pixbuf) get_width() int {
+	c := C.gdk_pixbuf_get_width(v.native())
+	return int(c)
+}
+
+fn (v *Pixbuf) get_height() int {
+	c := C.gdk_pixbuf_get_height(v.native())
+	return int(c)
+}
+
+fn (v *Pixbuf) get_rowstride() int {
+	c := C.gdk_pixbuf_get_rowstride(v.native())
+	return int(c)
+}
+
+fn (v *Pixbuf) get_byte_length() int {
+	c := C.gdk_pixbuf_get_byte_length(v.native())
+	return int(c)
+}
+
+fn (v *Pixbuf) get_option(key string) (value string, ok bool) {
+	cstr := C.string(key)
+	defer C.free(voidptr(cstr))
+	c := C.gdk_pixbuf_get_option(v.native(), (*C.char)(cstr))
+
+	if isnil(c) {
+		return '', false
+	}
+
+	return string((*C.char)(c)), true
+}
+
+fn (v *Pixbuf) new(colorspace Colorspace, has_alpha bool, bits_per_sample, width, height int) (*Pixbuf, error) {
+	c := C.gdk_pixbuf_new(
+		C.GdkColorspace(colorspace),
+		C.boolean(has_alpha),
+		C.int(bits_per_sample),
+		C.int(width),
+		C.int(height)
+	)
+
+	if isnil(c) {
+		return voidptr, voidptr_err
+	}
+
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	p := &Pixbuf{obj}
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p, voidptr
+}
+
+fn pixbuf_copy(v *Pixbuf) (*Pixbuf, error) {
+	c := C.gdk_pixbuf_copy(v.native())
+
+	if isnil(c) {
+		return voidptr, voidptr_err
+	}
+
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	p := &Pixbuf{obj}
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p, voidptr
+}
+
+fn (v *Pixbuf) new_from_file(filename string) (*Pixbuf, error) {
+	cstr := C.string(filename)
+	defer C.free(voidptr(cstr))
+
+	mut err := *Error{}
+
+	c := C.gdk_pixbuf_new_from_file(v.native(), (*C.char)(cstr), &err)
+
+	if isnil(c) {
+		defer C.error_free(err)
+		return voidptr, error(C.string((*C.char)(err.message)))
+	}
+
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	p := &Pixbuf{obj}
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p, voidptr
+}
+
+fn (v *Pixbuf) new_from_file_at_size(filename string, width, height int) (*Pixbuf, error) {
+	cstr := C.string(filename)
+	defer C.free(voidptr(cstr))
+
+	mut err := *Error{}
+	c := C.gdk_pixbuf_new_from_file_at_size(v.native(), cstr, C.int(width), C.int(height), &err)
+
+	if !isnil(err) {
+		defer C.error_free(err)
+		return voidptr, error(C.string((*C.char)(err.message)))
+	}
+
+	if isnil(c) {
+		return voidptr, voidptr_err
+	}
+
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	p := &Pixbuf{obj}
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p, voidptr
+}
+
+fn (v *Pixbuf) new_from_file_at_scale(filename string, width, height int, preserve_aspect_ratio bool) (*Pixbuf, error) {
+	cstr := C.string(filename)
+	defer C.free(voidptr(cstr))
+
+	err := *Error{}
+	c := C.gdk_pixbuf_new_from_file_at_scale(
+		v.native(),
+		cstr,
+		C.int(width),
+		C.int(height),
+		C.boolean(preserve_aspect_ratio, &err)
+	)
+
+	if !isnil(err) {
+		defer C.error_free(err)
+		return voidptr, error(C.string((*C.char)(err.message)))
+	}
+
+	if isnil(c) {
+		return voidptr, voidptr_err
+	}
+
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	p := &Pixbuf{obj}
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p, voidptr
+}
+
+fn (v *Pixbuf) scale_simple(dest_width, dest_height int, interp_type InterpType) (*Pixbuf, error) {
+	c := C.gdk_pixbuf_scale_simple(
+		v.native(), C.int(dest_width), C.int(dest_height), C.GdkInterpType(interp_type)
+	)
+
+	if isnil(c) {
+		return voidptr, voidptr_err
+	}
+
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	p := &Pixbuf{obj}
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p, voidptr
+}
+
+fn (v *Pixbuf) rotate_simple(angle PixbufRotation) (*Pixbuf, error) {
+	c := C.gdk_pixbuf_rotate_simple(v.native(), C.GdkPixbufRotation(angle))
+
+	if isnil(c) {
+		return voidptr, voidptr_err
+	}
+
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	p := &Pixbuf{obj}
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p, voidptr
+}
+
+fn (v *Pixbuf) apply_embedded_orientation() (*Pixbuf, error) {
+	c := C.gdk_pixbuf_apply_embedded_orientation(v.native())
+
+	if isnil(c) {
+		return voidptr, voidptr_err
+	}!bool(c)
+
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	p := &Pixbuf{obj}
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p, voidptr
+}
+
+fn (v *Pixbuf) flip(horizontal bool) (*Pixbuf, error) {
+	c := C.gdk_pixbuf_flip(v.native(), C.boolean(horizontal))
+
+	if isnil(c) {
+		return voidptr, voidptr_err
+	}
+
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	p := &Pixbuf{obj}
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p, voidptr
+}
+
+fn (v *Pixbuf) save_jpeg(path string, quality int) error {
+	cpath := C.string(path)
+	cquality := C.string(quality.itoa())
+	defer C.free(voidptr(cpath))
+	defer C.free(voidptr(cquality))
+
+	err := *Error{}
+	c := C._gdk_pixbuf_save_jpeg(v.native(), cpath, &err, cquality)
+
+	if typeof(c) != bool {
+		defer C.error_free(err)
+		return error(C.string((*C.char)(err.message)))
+	}
+
+	return voidptr
+}
+
+fn (v *Pixbuf) save_png(path string, compression int) error {
+	cpath := C.string(path)
+	ccompression := C.string(compression.itoa())
+	defer C.free(voidptr(cpath))
+	defer C.free(voidptr(ccompression))
+
+	err := *Error{}
+	c := C._gdk_pixbuf_save_png(v.native(), cpath, &err, ccompression)
+
+	if typeof(c) != bool {
+		defer C.error_free(err)
+		return error(C.string((*C.char)(err.message)))
+	}
+
+	return voidptr
+}
+
+fn (v *Pixbuf) get_file_info(filename string) (mut format interface{}, width, height int) {
+	cstr := C.string(filename)
+	defer C.free(voidptr(cstr))
+	mut cw, ch := C.int(0)
+
+	format = C.gdk_pixbuf_get_file_info(v.native(), (*C.char)(cstr), &cw, &ch)
+	return format, int(cw), int(ch)
+}
+
+type PixbufAnimation struct {
+	*glib.Object
+}
+
+fn (v *PixbufAnimation) native() *C.GdkPixbufAnimation {
+	if isnil(v) || isnil(v.GObject) {
+		return voidptr
+	}
+
+	p := voidptr(v.GObject)
+	return C.toGdkPixbufAnimation(p)
+}
+
+fn (v *PixbufAnimation) native_private() *C.GdkPixbufAnimation {
+	if isnil(v) || isnil(v.GObject) {
+		return voidptr
+	}
+
+	p := voidptr(v.GObject)
+	return C.toGdkPixbufAnimation(p)
+}
+
+fn marshal_pixbuf_animation(p byteptr) (interface{}, error) {
+	c := C.g_value_get_object((*C.value)(voidptr(p)))
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	return &PixbufAnimation{obj}, voidptr
+}

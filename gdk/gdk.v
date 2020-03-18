@@ -1552,3 +1552,503 @@ fn marshal_pixbuf_animation(p byteptr) (interface{}, error) {
 	obj := &glib.Object{glib.to_gobject(voidptr(c))}
 	return &PixbufAnimation{obj}, voidptr
 }
+
+fn (v *PixbufAnimation) new_from_file(filename string) (*PixbufAnimation, error) {
+	cstr := C.string(filename)
+	defer C.free(voidptr(cstr))
+
+	mut err := Error{}
+	c := C.gdk_pixbuf_animation_new_from_file((*C.char)(cstr), &err)
+
+	if isnil(c) {
+		defer C.error_free(err)
+		return voidptr, error(C.string((*C.char)(err.message)))
+	}
+
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	p := &PixbufAnimation{obj}
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p, voidptr
+}
+
+type PixbufLoader struct {
+	*glib.Object
+}
+
+fn (v *PixbufLoader) native() *C.GdkPixbufLoader {
+	if isnil(v) || isnil(v.GObject) {
+		return voidptr
+	}
+
+	p := voidptr(v.GObject)
+	return C.toGdkPixbufLoader(p)
+}
+
+fn (v *PixbufLoader) new() (*PixbufLoader, error) {
+	c := C.gdk_pixbuf_loader_new(v.native())
+
+	if isnil(c) {
+		return voidptr, voidptr_err
+	}
+
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	p := &PixbufLoader{obj}
+	obj.ref()
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p, voidptr
+}
+
+fn (v *PixbufLoader) new_with_type(t string) (*PixbufLoader, error) {
+	mut err := Error{}
+	cstr := C.string(t)
+	defer C.free(voidptr(cstr))
+
+	c := C.gdk_pixbuf_loader_new_with_type((*C.char)(cstr), &err)
+
+	if !isnil(err) {
+		defer C.error_free(err)
+		return voidptr, error(C.string((*C.char)(err.message)))
+	}
+
+	if isnil(c) {
+		return voidptr, voidptr_err
+	}
+
+	return &PixbufLoader{glib.Take(voidptr(c))}, voidptr
+}
+
+fn (v *PixbufLoader) write(data []byte) (int, error) {
+	if data.len == 0 {
+		return 0, voidptr
+	}
+
+	mut err := Error{}
+	c := C.gdk_pixbuf_loader_write(
+		v.native(), (*C.char)(voidptr(&data[0])), C.size(data.len), &err
+	)
+
+	if typeof(c) != bool {
+		defer C.error_free(err)
+		return 0, error(C.string((*C.char)(err.message)))
+	}
+
+	return data.len, voidptr
+}
+
+fn (v *PixbufLoader) write_and_return_pixbuf(data []byte) (*Pixbuf, error) {
+	if data.len == 0 {
+		return voidptr, error("[!] ERROR: No data")
+	}
+
+	mut err := Error{}
+	c := C.gdk_pixbuf_loader_write(
+		v.native(), (*C.char)(voidptr(&data[0])), C.size(data.len), &err
+	)
+
+	if typeof(c) != bool {
+		defer C.error_free(err)
+		return voidptr, error(string((*C.char)(err.message)))
+	}
+
+	v.close()
+
+	c2 := C.gdk_pixbuf_loader_get_pixbuf(v.native())
+
+	if isnil(c2) {
+		return voidptr, voidptr_err
+	}
+
+	obj := &glib.Object{glib.to_gobject(voidptr(c2))}
+	p := &Pixbuf{obj}
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p. voidptr
+}
+
+fn (v *PixbufLoader) close() error {
+	mut err := &Error{}
+
+	if ok := bool(C.gdk_pixbuf_loader_close(v.native(), &err)); !ok {
+		defer C.error_free(err)
+		return error(string((*C.char)(err.message)))
+	}
+
+	return voidptr
+}
+
+fn (v *PixbufLoader) set_size(width, height int) {
+	C.gdk_pixbuf_loader_set_size(v.native(), C.int(width), C.int(height))
+}
+
+fn (v *PixbufLoader) get_pixbuf() (*Pixbuf, error) {
+	c := C.gdk_pixbuf_loader_get_pixbuf(v.native())
+
+	if isnil(c) {
+		return voidptr, voidptr_err
+	}
+
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	p := &Pixbuf{obj}
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p, voidptr
+}
+
+fn (v *PixbufLoader) get_animation() (*PixbufAnimation, error) {
+	c := C.gdk_pixbuf_loader_get_animation(v.native())
+
+	if isnil(c) {
+		return voidptr, voidptr_err
+	}
+
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	p := &PixbufAnimation{obj}
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p, voidptr
+}
+
+fn (v *PixbufLoader) write_and_return_pixbuf_animation(data []byte) (*PixbufAnimation, error) {
+	if data.len == 0 {
+		return voidptr, error("[!] ERROR: No data")
+	}
+
+	mut err := *Error{}
+	c := C.gdk_pixbuf_loader_write(
+		v.native(), (*C.char)(voidptr(&data[0])), C.size(data.len), &err
+	)
+
+	if typeof(c) != bool {
+		defer C.error_free(err)
+		return voidptr, error(string((*C.char)(err.message)))
+	}
+
+	v.close()
+
+	c2 := C.gdk_pixbuf_loader_get_animation(v.native())
+
+	if isnil(c2) {
+		return voidptr, voidptr_err
+	}
+
+	obj := &glib.Object{glib.to_gobject(voidptr(c2))}
+	p := &PixbufAnimation{obj}
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p, voidptr
+}
+
+type RGBA struct {
+	rbga *C.GdkRGBA
+}
+
+fn marshal_rgba(p byteptr) (interface{}, error) {
+	c := C.g_value_get_boxed((*C.value)(voidptr(p)))
+	return wrap_rgba(voidptr(c)), voidptr
+}
+
+fn wrap_rgba(p byteptr) *RGBA {
+	return & _wrap_rgba((*C.GdkRBGA)(p))
+}
+
+fn _wrap_rgba(obj *C.GdkRGBA) *RGBA {
+	return &RGBA{obj}
+}
+
+fn (v *RGBA) new(values ...f64) *RGBA {
+	cval := C.GdkRGBA(v.native())
+	c := &RGBA{&cval}
+
+	if values.len > 0 {
+		c.rgba.red = C.double(values[0])
+	}
+
+	if values.len > 1 {
+		c.rgba.green = C.double(values[1])
+	}
+
+	if values.len > 2 {
+		c.rgba.blue = C.double(values[2])
+	}
+
+	if values.len > 3 {
+		c.rgba.alpha = C.double(values[3])
+	}
+
+	return c
+}
+
+fn (c *RGBA) floats() []f64 {
+	return []f64{
+		f64(c.rgba.red),
+		f64(c.rgba.green),
+		f64(c.rgba.blue),
+		f64(c.rgba.alpha)
+	}
+}
+
+fn (c *RGBA) set_colors(r, g, b, a f64) {
+	c.rgba.red = C.double(r)
+	c.rgba.green = C.double(g)
+	c.rgba.blue = C.double(b)
+	c.rgba.alpha = C.double(a)
+}
+
+fn (c *RGBA) native_ptr() byteptr {
+	return byteptr(voidptr(c.rgba))
+}
+
+fn (c *RGBA) parse(spec string) bool {
+	cstr := (*C.char)(C.string(spec))
+	defer C.free(voidptr(cstr))
+	return bool(C.gdk_rgba_parse(c.rgba, cstr))
+}
+
+fn (c *RGBA) to_string() string {
+	return string((*C.char)(C.gdk_rgba_to_string(c.rgba)))
+}
+
+type Rectangle struct {
+	gdk_rectangle C.GdkRectangle
+}
+
+fn wrap_rectangle(p byteptr) *Rectangle {
+	return _wrap_rectangle((*C.GdkRectangle)(voidptr(p)))
+}
+
+fn _wrap_rectangle(obj *C.GdkRectangle) *Rectangle {
+	if isnil(obj) {
+		return voidptr
+	}
+
+	return &Rectangle{*obj}
+}
+
+fn (r *Rectangle) get_x() int {
+	return int(r.native().x)
+}
+
+fn (r *Rectangle) set_x(x int) {
+	r.native().x = C.int(x)
+}
+
+fn (r *Rectangle) get_y() int {
+	return int(r.native().y)
+}
+
+fn (r *Rectangle) set_y(y int) {
+	r.native().y = C.int(y)
+}
+
+fn (r *Rectangle) get_width() int {
+	return int(r.native().width)
+}
+
+fn (r *Rectangle) set_width(width int) {
+	r.native().width = C.int(width)
+}
+
+fn (r *Rectangle) get_height() int {
+	return int(r.native().height)
+}
+
+fn (r *Rectangle) set_height(height int) {
+	r.native().height = C.int(height)
+}
+
+type Geometry struct {
+	gdk_geometry C.GdkGeometry
+}
+
+fn wrap_geometry(p byteptr) *Geometry {
+	return _wrap_geometry((*C.GdkGeometry)(voidptr(p)))
+}
+
+fn _wrap_geometry(obj *C.GdkGeometry) *Geometry {
+	if isnil(obj) {
+		return voidptr
+	}
+
+	return &Geometry{*obj}
+}
+
+fn (r *Geometry) native() *C.GdkGeometry {
+	return &r.GdkGeometry
+}
+
+fn (r *Geometry) get_min_width() int {
+	return int(r.native().min_width)
+}
+
+fn (r *Geometry) set_min_width(min_width int) {
+	r.native().min_width = C.int(min_width)
+}
+
+fn (r *Geometry) get_min_height() int {
+	return int(r.native().min_height)
+}
+
+fn (r *Geometry) set_min_height(min_height int) {
+	r.native().min_height = C.int(min_height)
+}
+
+fn (r *Geometry) get_max_width() int {
+	return int(r.native().max_width)
+}
+
+fn (r *Geometry) set_max_width(max_width int) {
+	r.native().max_width = C.int(max_width)
+}
+
+fn (r *Geometry) get_max_height() int {
+	return int(r.native().max_height)
+}
+
+fn (r *Geometry) set_max_height(max_height int) {
+	r.native().max_height = C.int(max_height)
+}
+
+fn (r *Geometry) get_base_width() int {
+	return int(r.native().base_width)
+}
+
+fn (r *Geometry) set_base_width(base_width int) {
+	r.native().base_width = C.int(base_width)
+}
+
+fn (r *Geometry) get_base_height() int {
+	return int(r.native().base_height)
+}
+
+fn (r *Geometry) set_base_height(base_height int) {
+	r.native().base_height = C.int(base_height)
+}
+
+fn (r *Geometry) get_width_inc() int {
+	return int(r.native().width_inc)
+}
+
+fn (r *Geometry) set_width_inc(width_inc int) {
+	r.native().width_inc = C.int(width_inc)
+}
+
+fn (r *Geometry) get_height_inc() int {
+	return int(r.native().height_inc)
+}
+
+fn (r *Geometry) set_height_inc(height_inc int) {
+	r.native().height_inc = C.int(height_inc)
+}
+
+fn (r *Geometry) get_min_aspect() f64 {
+	return f64(r.native().min_aspect)
+}
+
+fn (r *Geometry) set_min_aspect(min_aspect f64) {
+	r.native().min_aspect = C.double(min_aspect)
+}
+
+fn (r *Geometry) get_max_aspect() f64 {
+	return f64(r.native().max_aspect)
+}
+
+fn (r *Geometry) set_max_aspect(max_aspect f64) {
+	r.native().max_aspect = C.double(max_aspect)
+}
+
+fn (r *Geometry) get_win_gravity() Gravity {
+	return Gravity(r.native().win_gravity)
+}
+
+fn (r *Geometry) set_win_gravity(win_gravity Gravity) {
+	r.native().win_gravity = C.GdkGravity(win_gravity)
+}
+
+type Visual struct {
+	*glib.Object
+}
+
+fn (v *Visual) native() *C.GdkVisual {
+	if isnil(v) || isnil(v.GObject) {
+		return voidptr
+	}
+
+	p := voidptr(v.GObject)
+	return C.toGdkVisual(p)
+}
+
+fn (v *Visual) native_ptr() byteptr {
+	return byteptr(voidptr(v.native()))
+}
+
+fn marshal_visual(p byteptr) (interface{}, error) {
+	c := C.g_value_get_object((*C.value)(voidptr(p)))
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	return &Visual{obj}, voidptr
+}
+
+type Window struct {
+	*glib.Object
+}
+
+fn (v *Window) set_cursor(cursor *Cursor) {
+	C.gdk_window_set_cursor(v.native(), cursor.native())
+}
+
+fn (v *Window) native() *C.GdkWindow {
+	if isnil(v) || isnil(v.GObject) {
+		return voidptr
+	}
+
+	p := voidptr(v.GObject)
+	return C.toGdkWindow(p)
+}
+
+fn (v *Window) native_ptr() byteptr {
+	return byteptr(voidptr(v.native()))
+}
+
+fn (v *Window) get_width() (width int) {
+	return int(C.gdk_window_get_width(v.native()))
+}
+
+fn (v *Window) get_height() (height int) {
+	return int(C.gdk_window_get_height(v.native()))
+}
+
+fn (v *Window) pixbuf_get_from_window(x, y, w, h int) (*Pixbuf, error) {
+	c := C.gdk_pixbuf_get_from_window(
+		v.native(), C.int(x), C.int(y), C.int(w), C.int(h)
+	)
+
+	if isnil(c) {
+		return voidptr, voidptr_err
+	}
+
+	obj := glib.Object{glib.to_gobject(voidptr(c))}
+	p := &Pixbuf{obj}
+	runtime.set_finalizer(p, fn(_ interface{}) { obj.unref() })
+	return p, voidptr
+}
+
+fn (v *Window) get_device_position(d *Device) (*Window, int, int, ModifierType) {
+	mut x, y := C.int(0)
+	mut mt := &C.GdkModifierType{}
+	underneath_window := C.gdk_window_get_device_position(v.native(), d.native(), &x, &y, &mt)
+
+	obj := &glib.Object{glib.to_gobject(voidptr(underneath_window))}
+	rw := &Window{obj}
+	runtime.set_finalizer(rw, fn(_ interface{}) { obj.unref() })
+	return rw, int(x), int(y), ModifierType(mt)
+}
+
+fn marshal_window(p byteptr) (interface{}, error) {
+	c := C.g_value_get_object((*C.value)(voidptr(p)))
+	obj := &glib.Object{glib.to_gobject(voidptr(c))}
+	return &Window{obj}, voidptr
+}
+
+fn to_window(s *C.GdkWindow) (*Window, error) {
+	if isnil(s) {
+		return voidptr, voidptr_err
+	}
+
+	obj := &glib.Object{glib..to_gobject(voidptr(s))}
+	return &Window{obj}, voidptr
+}

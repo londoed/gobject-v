@@ -1,6 +1,19 @@
 # gobject-v
 GTK Bindings for the V Programming Language.
 
+# Installation
+Installation can be done through the V Package Manager (vpm) with the following command:
+```
+v install londoed.gobjectv
+```
+Or via vpkg:
+```
+vpkg get gobjectv
+
+# or
+
+vpkg get https://github.com/londoed/gobject-v
+```
 # Sample Usage
 Create a GTK Window:
 

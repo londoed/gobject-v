@@ -4,7 +4,7 @@ GTK Bindings for the V Programming Language.
 # Sample Usage
 Create a GTK Window:
 
-```Vlang
+```V
 import gtk
 import os
 
@@ -38,7 +38,7 @@ fn main() {
 
 Create a simple GTK application:
 
-```Vlang
+```V
 import gtk
 import glib
 import os
@@ -71,7 +71,7 @@ fn on_activate(application *gtk.Application {
 
 Another simple GTK application:
 
-```Vlang
+```V
 import gtk
 import glib
 import os

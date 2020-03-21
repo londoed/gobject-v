@@ -2,7 +2,7 @@
 GTK Bindings for the V Programming Language.
 
 # Sample Usage
-Create a GTK Application:
+Create a GTK Window:
 
 ```Vlang
 import gtk
@@ -30,11 +30,13 @@ fn main() {
     
     win.add(l)
     win.set_default_size(800, 800)
-    wind.show_all()
+    win.show_all()
     
     gtk.main()
 }
 ```
+
+Create a simple GTK application:
 
 ```Vlang
 import gtk
@@ -66,6 +68,8 @@ fn on_activate(application *gtk.Application {
     app_window.show()
 }
 ```
+
+Another simple GTK application:
 
 ```Vlang
 import gtk

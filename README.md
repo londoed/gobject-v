@@ -19,9 +19,6 @@ Create a GTK Window:
 
 ```V
 import gobject
-from gobject import gtk
-from gobject import gdk
-from gobject import glib
 import os
 
 fn main() {
@@ -47,9 +44,6 @@ Create a simple GTK application:
 
 ```V
 import gobject
-from gobject import gtk
-from gobject import gdk
-from gobject import glib
 import os
 
 const app_id = 'org.gtk.example'
@@ -75,9 +69,6 @@ Another simple GTK application:
 
 ```V
 import gobject
-from gobject import gtk
-from gobject import gdk
-from gobject import glib
 import os
 
 const app_id = 'org.gtk.exampleapp'

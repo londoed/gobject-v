@@ -18,28 +18,22 @@ vpkg get https://github.com/londoed/gobject-v
 Create a GTK Window:
 
 ```V
-import gtk
+import gobject
+from gobject import gtk
+from gobject import gdk
+from gobject import glib
 import os
 
 fn main() {
     gtk.init(voidptr)
     
-    win, err := gtk.Window.new(gtk.WINDOW_TOPLEVEL)
-    
-    if !isnil(err) {
-        panic('[!] ERROR: Unable to create window: $err')
-    }
-    
+    win := gtk.Window{level: gtk.WINDOW_TOPLEVEL}
     win.set_title('Simple Example')
     win.connect("destroy", fn() {
         gtk.main_quit()
     })
     
-    l, err := gtk.Label.new('GTK V App')
-    
-    if !isnil(err) {
-        panic('[!] ERROR: Unable to create label: $err')
-    }
+    l := gtk.Label{text: 'GTK V App'}
     
     win.add(l)
     win.set_default_size(800, 800)
@@ -52,29 +46,24 @@ fn main() {
 Create a simple GTK application:
 
 ```V
-import gtk
-import glib
+import gobject
+from gobject import gtk
+from gobject import gdk
+from gobject import glib
 import os
 
 const app_id = 'org.gtk.example'
 
 fn main() {
-    application, err := gtk.ApplicationWindow.new(app_id, glib.APPLICATION_FLAGS_NONE)
+    application := gtk.ApplicationWindow{app_id: app_id, app_flags: glib.APPLICATION_FLAGS_NONE}
     
-    if !isnil(err) {
-        panic('[!] ERROR: Could not create application: $err')
-    }
     
     application.connect("activate", fn() { on_activate(application) })
-    os.exit(application.run(os.args))
+    application.run(os.args))
 }
 
 fn on_activate(application *gtk.Application {
-    app_window, err := gtk.ApplicationWindow(application)
-    
-    if !isnil(err) {
-        panic([!] ERROR: Could not create application window: $err)
-    }
+    app_window := gtk.ApplicationWindow{app: application}
     
     app_window.set_title('Basic Application')
     app_window.set_default_size(400, 400)
@@ -85,25 +74,19 @@ fn on_activate(application *gtk.Application {
 Another simple GTK application:
 
 ```V
-import gtk
-import glib
+import gobject
+from gobject import gtk
+from gobject import gdk
+from gobject import glib
 import os
 
 const app_id = 'org.gtk.exampleapp'
 
 fn main() {
-    application, err := gtk.Application.new(app_id, glib.APPLICATION_FLAGS_NONE)
-    
-    if !isnil(err) {
-        panic('[!] ERROR: Could not create application: $err')
-    }
+    application := gtk.Application{app_id: app_id, app_flags: glib.APPLICATION_FLAGS_NONE}
     
     application.connect('application', fn() {
-        app_window, err := gtk.ApplicationWindow.new(application)
-        
-        if !isnil(err) {
-            panic('[!] ERROR: Could not create application window: $err')
-        }
+        app_window := gtk.ApplicationWindow{app: application}
         
         app_window.set_title('Basic Application')
         app_window.set_default_size(400, 400)

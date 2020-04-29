@@ -30,9 +30,9 @@ fn main() {
         gtk.main_quit()
     })
     
-    l := gtk.Label{text: 'GTK V App'}
+    lbl := gtk.Label{text: 'GTK V App'}
     
-    win.add(l)
+    win.add(lbl)
     win.set_default_size(800, 800)
     win.show_all()
     
@@ -56,7 +56,7 @@ fn main() {
     application.run(os.args))
 }
 
-fn on_activate(application *gtk.Application {
+fn on_activate(application *gtk.Application) {
     app_window := gtk.ApplicationWindow{app: application}
     
     app_window.set_title('Basic Application')
